@@ -7,3 +7,9 @@ spring:
 
 server:
   port: 8080
+
+jwt:
+  # HS256 대칭키 (운영에서는 환경변수로 주입 권장)
+  secret: ${JWT_SECRET:eventflow-local-dev-secret-key-please-change-in-production-0123456789}
+  access-token-validity: 1800000        # 30분
+  refresh-token-validity: 1209600000    # 14일
