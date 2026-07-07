@@ -51,4 +51,21 @@ public class Event extends BaseEntity {
         this.status = EventStatus.OPEN;
         this.createdBy = createdBy;
     }
+
+    public void update(String title, String description, String location,
+                       LocalDateTime startAt, LocalDateTime endAt) {
+        this.title = title;
+        this.description = description;
+        this.location = location;
+        this.startAt = startAt;
+        this.endAt = endAt;
+    }
+
+    public void close() {
+        this.status = EventStatus.CLOSED;
+    }
+
+    public boolean isOwnedBy(Long userId) {
+        return this.createdBy.getId().equals(userId);
+    }
 }

@@ -19,6 +19,11 @@ public enum ErrorStatus implements BaseStatus {
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "AUTH4011", "유효하지 않은 Refresh Token 입니다."),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH4012", "만료되었거나 이미 사용된 Refresh Token 입니다."),
     USER_NOT_FOUND(HttpStatus.UNAUTHORIZED, "AUTH4013", "존재하지 않는 사용자입니다."),
+
+    // 행사
+    EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT404", "존재하지 않는 행사입니다."),
+    EVENT_FORBIDDEN(HttpStatus.FORBIDDEN, "EVENT403", "행사에 대한 권한이 없습니다."),
+    INVALID_EVENT_PERIOD(HttpStatus.BAD_REQUEST, "EVENT400", "행사 종료 시각은 시작 시각 이후여야 합니다."),
     ;
 
     private final HttpStatus httpStatus;

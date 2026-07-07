@@ -16,6 +16,12 @@ public enum SuccessStatus implements BaseStatus {
     LOGIN_SUCCESS(HttpStatus.OK, "AUTH2001", "로그인 되었습니다."),
     REISSUE_SUCCESS(HttpStatus.OK, "AUTH2002", "토큰이 재발급되었습니다."),
     LOGOUT_SUCCESS(HttpStatus.OK, "AUTH2003", "로그아웃 되었습니다."),
+
+    // 행사
+    EVENT_CREATED(HttpStatus.CREATED, "EVENT201", "행사가 생성되었습니다."),
+    EVENT_UPDATED(HttpStatus.OK, "EVENT2001", "행사가 수정되었습니다."),
+    EVENT_CLOSED(HttpStatus.OK, "EVENT2002", "행사가 마감되었습니다."),
+    EVENT_DELETED(HttpStatus.OK, "EVENT2003", "행사가 삭제되었습니다."),
     ;
 
     private final HttpStatus httpStatus;
