@@ -6,6 +6,8 @@ import com.example.eventflow.domain.schedule.service.ScheduleService;
 import com.example.eventflow.global.payload.CommonResponse;
 import com.example.eventflow.global.payload.status.SuccessStatus;
 import com.example.eventflow.global.security.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Tag(name = "회차", description = "행사 회차 API")
 @RestController
 @RequestMapping("/api/events/{eventId}/schedules")
 public class ScheduleController {
@@ -24,6 +27,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
+    @Operation(summary = "회차 생성")
     @PostMapping
     public ResponseEntity<CommonResponse<ScheduleResponse>> createSchedule(
             @AuthenticationPrincipal AuthUser authUser,
@@ -34,6 +38,7 @@ public class ScheduleController {
                 .body(CommonResponse.of(SuccessStatus.SCHEDULE_CREATED, response));
     }
 
+    @Operation(summary = "회차 목록 조회")
     @GetMapping
     public CommonResponse<List<ScheduleResponse>> getSchedules(@PathVariable Long eventId) {
         return CommonResponse.onSuccess(scheduleService.getSchedules(eventId));

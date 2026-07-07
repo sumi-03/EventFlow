@@ -5,6 +5,9 @@ import com.example.eventflow.domain.event.service.EventService;
 import com.example.eventflow.global.payload.CommonResponse;
 import com.example.eventflow.global.payload.status.SuccessStatus;
 import com.example.eventflow.global.security.AuthUser;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springdoc.core.annotations.ParameterObject;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -14,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+@Tag(name = "행사", description = "행사 CRUD API")
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
@@ -24,6 +28,7 @@ public class EventController {
         this.eventService = eventService;
     }
 
+    @Operation(summary = "행사 생성")
     @PostMapping
     public ResponseEntity<CommonResponse<EventResponse>> createEvent(
             @AuthenticationPrincipal AuthUser authUser,
@@ -33,17 +38,20 @@ public class EventController {
                 .body(CommonResponse.of(SuccessStatus.EVENT_CREATED, response));
     }
 
+    @Operation(summary = "행사 목록 조회")
     @GetMapping
     public CommonResponse<EventListResponse> getEvents(
-            @PageableDefault(size = 10, sort = "startAt", direction = Sort.Direction.ASC) Pageable pageable) {
+            @ParameterObject @PageableDefault(size = 10, sort = "startAt", direction = Sort.Direction.ASC) Pageable pageable) {
         return CommonResponse.onSuccess(eventService.getEvents(pageable));
     }
 
+    @Operation(summary = "행사 상세 조회")
     @GetMapping("/{eventId}")
     public CommonResponse<EventResponse> getEvent(@PathVariable Long eventId) {
         return CommonResponse.onSuccess(eventService.getEvent(eventId));
     }
 
+    @Operation(summary = "행사 수정")
     @PatchMapping("/{eventId}")
     public CommonResponse<EventResponse> updateEvent(
             @AuthenticationPrincipal AuthUser authUser,
@@ -53,6 +61,7 @@ public class EventController {
                 eventService.updateEvent(authUser.userId(), eventId, request));
     }
 
+    @Operation(summary = "행사 마감", description = "행사를 CLOSED 상태로 변경합니다.")
     @PatchMapping("/{eventId}/close")
     public CommonResponse<EventResponse> closeEvent(
             @AuthenticationPrincipal AuthUser authUser,
@@ -61,6 +70,7 @@ public class EventController {
                 eventService.closeEvent(authUser.userId(), eventId));
     }
 
+    @Operation(summary = "행사 삭제")
     @DeleteMapping("/{eventId}")
     public CommonResponse<Void> deleteEvent(
             @AuthenticationPrincipal AuthUser authUser,
