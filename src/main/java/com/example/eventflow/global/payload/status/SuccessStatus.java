@@ -22,6 +22,10 @@ public enum SuccessStatus implements BaseStatus {
     EVENT_UPDATED(HttpStatus.OK, "EVENT2001", "행사가 수정되었습니다."),
     EVENT_CLOSED(HttpStatus.OK, "EVENT2002", "행사가 마감되었습니다."),
     EVENT_DELETED(HttpStatus.OK, "EVENT2003", "행사가 삭제되었습니다."),
+
+    // 회차/좌석
+    SCHEDULE_CREATED(HttpStatus.CREATED, "SCHEDULE201", "회차가 생성되었습니다."),
+    SEAT_REGISTERED(HttpStatus.CREATED, "SEAT201", "좌석이 등록되었습니다."),
     ;
 
     private final HttpStatus httpStatus;

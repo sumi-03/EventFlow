@@ -24,6 +24,14 @@ public enum ErrorStatus implements BaseStatus {
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT404", "존재하지 않는 행사입니다."),
     EVENT_FORBIDDEN(HttpStatus.FORBIDDEN, "EVENT403", "행사에 대한 권한이 없습니다."),
     INVALID_EVENT_PERIOD(HttpStatus.BAD_REQUEST, "EVENT400", "행사 종료 시각은 시작 시각 이후여야 합니다."),
+
+    // 회차
+    SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404", "존재하지 않는 회차입니다."),
+    INVALID_SCHEDULE_PERIOD(HttpStatus.BAD_REQUEST, "SCHEDULE400", "회차 일정이 올바르지 않습니다."),
+
+    // 좌석
+    INVALID_SEAT_RANGE(HttpStatus.BAD_REQUEST, "SEAT400", "좌석 번호 범위가 올바르지 않습니다."),
+    DUPLICATE_SEAT(HttpStatus.CONFLICT, "SEAT409", "이미 등록된 좌석 번호가 있습니다."),
     ;
 
     private final HttpStatus httpStatus;
