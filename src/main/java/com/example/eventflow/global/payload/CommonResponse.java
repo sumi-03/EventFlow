@@ -11,11 +11,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-/**
- * 모든 API 응답을 감싸는 공통 포맷.
- * isSuccess / code / message / result 순으로 직렬화되며,
- * result 가 null 이면 응답 바디에서 생략된다. httpStatus 는 직렬화하지 않는다.
- */
+// 모든 API 응답 공통 포맷
+// result가 null이면 생략, httpStatus는 직렬화 제외
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})

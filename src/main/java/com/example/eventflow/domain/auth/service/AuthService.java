@@ -56,10 +56,7 @@ public class AuthService {
         return issueTokens(user);
     }
 
-    /**
-     * Refresh Token 회전(RTR): 유효성 + DB 존재를 검증한 뒤 기존 토큰을 삭제하고
-     * Access/Refresh 를 모두 새로 발급한다.
-     */
+    // Refresh Token 회전(RTR): 기존 토큰 삭제 후 Access/Refresh 재발급
     @Transactional
     public TokenResponse reissue(ReissueRequest request) {
         String refreshToken = request.refreshToken();

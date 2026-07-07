@@ -20,10 +20,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
-/**
- * JWT Access/Refresh 토큰 발급 및 검증.
- * HS256 대칭키 기반. Access 토큰에는 userId(subject), email, role claim 을 담는다.
- */
+// JWT Access/Refresh 토큰 발급 및 검증 (HS256, claim: userId, email, role)
 @Component
 public class JwtTokenProvider {
 
@@ -61,7 +58,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    /** 서명/만료 검증. 유효하지 않으면 false. */
+    // 서명 및 만료 검증
     public boolean validateToken(String token) {
         try {
             parseClaims(token);
@@ -75,13 +72,13 @@ public class JwtTokenProvider {
         return Long.valueOf(parseClaims(token).getSubject());
     }
 
-    /** Refresh 토큰의 만료 시각을 DB 저장용으로 변환. */
+    // Refresh 토큰 만료 시각 (DB 저장용)
     public LocalDateTime getExpiration(String token) {
         Instant expiration = parseClaims(token).getExpiration().toInstant();
         return LocalDateTime.ofInstant(expiration, ZoneId.systemDefault());
     }
 
-    /** claim 으로부터 인증 객체 복원 (DB 조회 없이 stateless). */
+    // claim으로부터 인증 객체 복원 (stateless)
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
         UserRole role = UserRole.valueOf(claims.get(CLAIM_ROLE, String.class));

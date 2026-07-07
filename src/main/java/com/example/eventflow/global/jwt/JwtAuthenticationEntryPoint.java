@@ -13,9 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-/**
- * 인증되지 않은 요청이 보호된 리소스에 접근할 때 401 CommonResponse 를 내려준다.
- */
+// 미인증 요청에 401 CommonResponse 응답
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

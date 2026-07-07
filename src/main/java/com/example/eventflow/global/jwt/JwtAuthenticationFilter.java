@@ -12,10 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-/**
- * 요청마다 Authorization 헤더의 Bearer 토큰을 검증해 SecurityContext 에 인증을 채운다.
- * 토큰이 없거나 유효하지 않으면 그냥 통과시키고, 인가는 SecurityConfig 가 처리한다.
- */
+// 요청의 Bearer 토큰 검증 후 SecurityContext에 인증 저장 (없거나 무효면 통과)
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String BEARER_PREFIX = "Bearer ";

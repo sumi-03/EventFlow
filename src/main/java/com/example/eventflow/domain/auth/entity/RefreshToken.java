@@ -8,11 +8,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-/**
- * Refresh Token 을 DB 로 관리하는 독립 엔티티.
- * token 값을 유니크 키로 두어 사용자당 여러 세션(멀티 디바이스)을 허용하고,
- * 재발급(RTR) 시 회전, 로그아웃 시 삭제한다.
- */
+// Refresh Token 관리 엔티티
+// token 유니크 → 멀티세션 허용, 재발급 시 회전(RTR)
 @Entity
 @Getter
 @Table(name = "refresh_tokens")

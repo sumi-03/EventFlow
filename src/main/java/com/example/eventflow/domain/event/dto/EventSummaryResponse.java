@@ -5,9 +5,7 @@ import com.example.eventflow.domain.event.entity.EventStatus;
 
 import java.time.LocalDateTime;
 
-/**
- * 목록 조회용 경량 응답 (생성자 정보 제외 → N+1 회피).
- */
+// 목록 조회용 경량 응답 (생성자 정보 제외 → N+1 회피)
 public record EventSummaryResponse(
         Long id,
         String title,
