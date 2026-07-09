@@ -38,6 +38,10 @@ public enum ErrorStatus implements BaseStatus {
     SEAT_ALREADY_RESERVED(HttpStatus.CONFLICT, "RESERVATION409", "이미 예매된 좌석입니다."),
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION404", "존재하지 않는 예매입니다."),
     RESERVATION_FORBIDDEN(HttpStatus.FORBIDDEN, "RESERVATION403", "예매에 대한 권한이 없습니다."),
+
+    // 결제
+    PAYMENT_NOT_ALLOWED(HttpStatus.CONFLICT, "PAYMENT409", "결제할 수 없는 예매 상태입니다."),
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT404", "결제 내역이 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

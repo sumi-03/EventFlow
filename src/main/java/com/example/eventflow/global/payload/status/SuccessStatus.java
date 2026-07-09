@@ -29,6 +29,9 @@ public enum SuccessStatus implements BaseStatus {
 
     // 예매
     RESERVATION_CREATED(HttpStatus.CREATED, "RESERVATION201", "예매가 완료되었습니다."),
+
+    // 결제
+    PAYMENT_SUCCESS(HttpStatus.CREATED, "PAYMENT201", "결제가 완료되었습니다."),
     ;
 
     private final HttpStatus httpStatus;
