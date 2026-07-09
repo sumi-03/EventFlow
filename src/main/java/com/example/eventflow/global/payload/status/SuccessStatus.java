@@ -26,6 +26,9 @@ public enum SuccessStatus implements BaseStatus {
     // 회차/좌석
     SCHEDULE_CREATED(HttpStatus.CREATED, "SCHEDULE201", "회차가 생성되었습니다."),
     SEAT_REGISTERED(HttpStatus.CREATED, "SEAT201", "좌석이 등록되었습니다."),
+
+    // 예매
+    RESERVATION_CREATED(HttpStatus.CREATED, "RESERVATION201", "예매가 완료되었습니다."),
     ;
 
     private final HttpStatus httpStatus;

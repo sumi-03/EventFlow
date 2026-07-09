@@ -32,6 +32,12 @@ public enum ErrorStatus implements BaseStatus {
     // 좌석
     INVALID_SEAT_RANGE(HttpStatus.BAD_REQUEST, "SEAT400", "좌석 번호 범위가 올바르지 않습니다."),
     DUPLICATE_SEAT(HttpStatus.CONFLICT, "SEAT409", "이미 등록된 좌석 번호가 있습니다."),
+    SEAT_NOT_FOUND(HttpStatus.NOT_FOUND, "SEAT404", "존재하지 않는 좌석입니다."),
+
+    // 예매
+    SEAT_ALREADY_RESERVED(HttpStatus.CONFLICT, "RESERVATION409", "이미 예매된 좌석입니다."),
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION404", "존재하지 않는 예매입니다."),
+    RESERVATION_FORBIDDEN(HttpStatus.FORBIDDEN, "RESERVATION403", "예매에 대한 권한이 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

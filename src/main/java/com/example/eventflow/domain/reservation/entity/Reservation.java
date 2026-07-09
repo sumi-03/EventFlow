@@ -1,6 +1,6 @@
 package com.example.eventflow.domain.reservation.entity;
 
-import com.example.eventflow.domain.ticket.entity.TicketProduct;
+import com.example.eventflow.domain.seat.entity.Seat;
 import com.example.eventflow.domain.user.entity.User;
 import com.example.eventflow.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -23,27 +23,20 @@ public class Reservation extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ticket_product_id", nullable = false)
-    private TicketProduct ticketProduct;
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seat seat;
 
     @Column(nullable = false)
-    private Integer quantity;
-
-    @Column(nullable = false)
-    private Integer totalPrice;
+    private Integer price;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private ReservationStatus status;
 
-    public Reservation(User user,
-                       TicketProduct ticketProduct,
-                       Integer quantity,
-                       Integer totalPrice) {
+    public Reservation(User user, Seat seat, Integer price) {
         this.user = user;
-        this.ticketProduct = ticketProduct;
-        this.quantity = quantity;
-        this.totalPrice = totalPrice;
+        this.seat = seat;
+        this.price = price;
         this.status = ReservationStatus.PENDING;
     }
 
