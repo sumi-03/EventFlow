@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    List<Ticket> findByUserId(Long userId);
+    List<Ticket> findByUserIdOrderByIssuedAtDesc(Long userId);
 
     Optional<Ticket> findByQrToken(String qrToken);
 }

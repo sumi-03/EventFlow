@@ -42,6 +42,10 @@ public enum ErrorStatus implements BaseStatus {
     // 결제
     PAYMENT_NOT_ALLOWED(HttpStatus.CONFLICT, "PAYMENT409", "결제할 수 없는 예매 상태입니다."),
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "PAYMENT404", "결제 내역이 없습니다."),
+
+    // 티켓
+    TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET404", "존재하지 않는 티켓입니다."),
+    TICKET_FORBIDDEN(HttpStatus.FORBIDDEN, "TICKET403", "티켓에 대한 권한이 없습니다."),
     ;
 
     private final HttpStatus httpStatus;

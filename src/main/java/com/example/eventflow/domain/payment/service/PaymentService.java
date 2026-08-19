@@ -6,6 +6,7 @@ import com.example.eventflow.domain.payment.repository.PaymentRepository;
 import com.example.eventflow.domain.reservation.entity.Reservation;
 import com.example.eventflow.domain.reservation.entity.ReservationStatus;
 import com.example.eventflow.domain.reservation.repository.ReservationRepository;
+import com.example.eventflow.domain.ticket.service.TicketService;
 import com.example.eventflow.global.exception.BusinessException;
 import com.example.eventflow.global.payload.status.ErrorStatus;
 import org.springframework.stereotype.Service;
@@ -19,11 +20,14 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final ReservationRepository reservationRepository;
+    private final TicketService ticketService;
 
     public PaymentService(PaymentRepository paymentRepository,
-                          ReservationRepository reservationRepository) {
+                          ReservationRepository reservationRepository,
+                          TicketService ticketService) {
         this.paymentRepository = paymentRepository;
         this.reservationRepository = reservationRepository;
+        this.ticketService = ticketService;
     }
 
     @Transactional
@@ -40,6 +44,7 @@ public class PaymentService {
         Payment payment = new Payment(reservation, reservation.getPrice());
         payment.success("MOCK-" + UUID.randomUUID());
         reservation.completePayment();
+        ticketService.issue(reservation);
         return PaymentResponse.from(paymentRepository.save(payment));
     }
 
