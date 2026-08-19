@@ -43,8 +43,10 @@ public class SeatService {
             if (group.endNumber() < group.startNumber()) {
                 throw new BusinessException(ErrorStatus.INVALID_SEAT_RANGE);
             }
+            // 좌석번호 정렬이 사전순으로 어긋나지 않도록 endNumber 자릿수에 맞춰 0 패딩
+            int width = String.valueOf(group.endNumber()).length();
             for (int n = group.startNumber(); n <= group.endNumber(); n++) {
-                String seatNumber = group.rowPrefix() + n;
+                String seatNumber = group.rowPrefix() + String.format("%0" + width + "d", n);
                 if (!seatNumbers.add(seatNumber)) {
                     throw new BusinessException(ErrorStatus.DUPLICATE_SEAT);
                 }

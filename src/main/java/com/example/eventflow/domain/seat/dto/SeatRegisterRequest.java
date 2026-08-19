@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 // 좌석 일괄 등록 요청, 구역(그룹)별 rowPrefix+startNumber~endNumber 좌석 생성
-// 예) {grade:VIP, price:100000, rowPrefix:"A", startNumber:1, endNumber:50} → A1~A50 (50석)
+// 예) {grade:VIP, price:100000, rowPrefix:"A", startNumber:1, endNumber:50} → A01~A50 (50석)
 public record SeatRegisterRequest(
         @NotEmpty @Valid List<SeatGroup> groups
 ) {
