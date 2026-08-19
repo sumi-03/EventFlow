@@ -1,7 +1,6 @@
 package com.example.eventflow.global.jwt;
 
 import com.example.eventflow.domain.user.entity.User;
-import com.example.eventflow.domain.user.entity.UserRole;
 import com.example.eventflow.global.security.AuthUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -9,7 +8,6 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -17,15 +15,14 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
-// JWT Access/Refresh 토큰 발급 및 검증 (HS256, claim: userId, email, role)
+// JWT Access/Refresh 토큰 발급 및 검증 (HS256, claim: userId, email)
 @Component
 public class JwtTokenProvider {
 
     private static final String CLAIM_EMAIL = "email";
-    private static final String CLAIM_ROLE = "role";
 
     private final SecretKey key;
     private final long accessTokenValidity;
@@ -51,7 +48,6 @@ public class JwtTokenProvider {
         return Jwts.builder()
                 .subject(String.valueOf(user.getId()))
                 .claim(CLAIM_EMAIL, user.getEmail())
-                .claim(CLAIM_ROLE, user.getRole().name())
                 .issuedAt(now)
                 .expiration(expiry)
                 .signWith(key)
@@ -81,15 +77,11 @@ public class JwtTokenProvider {
     // claim으로부터 인증 객체 복원 (stateless)
     public Authentication getAuthentication(String token) {
         Claims claims = parseClaims(token);
-        UserRole role = UserRole.valueOf(claims.get(CLAIM_ROLE, String.class));
         AuthUser principal = new AuthUser(
                 Long.valueOf(claims.getSubject()),
-                claims.get(CLAIM_EMAIL, String.class),
-                role
+                claims.get(CLAIM_EMAIL, String.class)
         );
-        List<SimpleGrantedAuthority> authorities =
-                List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        return new UsernamePasswordAuthenticationToken(principal, token, Collections.emptyList());
     }
 
     private Claims parseClaims(String token) {

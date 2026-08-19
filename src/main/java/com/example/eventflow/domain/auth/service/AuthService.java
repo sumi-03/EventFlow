@@ -4,7 +4,6 @@ import com.example.eventflow.domain.auth.dto.*;
 import com.example.eventflow.domain.auth.entity.RefreshToken;
 import com.example.eventflow.domain.auth.repository.RefreshTokenRepository;
 import com.example.eventflow.domain.user.entity.User;
-import com.example.eventflow.domain.user.entity.UserRole;
 import com.example.eventflow.domain.user.repository.UserRepository;
 import com.example.eventflow.global.exception.BusinessException;
 import com.example.eventflow.global.jwt.JwtTokenProvider;
@@ -40,8 +39,7 @@ public class AuthService {
         User user = new User(
                 request.email(),
                 passwordEncoder.encode(request.password()),
-                request.name(),
-                UserRole.USER
+                request.name()
         );
         return SignupResponse.from(userRepository.save(user));
     }
