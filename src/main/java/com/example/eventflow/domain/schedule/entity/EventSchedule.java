@@ -52,4 +52,16 @@ public class EventSchedule extends BaseEntity {
     public boolean isOwnedBy(Long userId) {
         return event.isOwnedBy(userId);
     }
+
+    public boolean hasStartedAt(LocalDateTime now) {
+        return !now.isBefore(this.startAt);
+    }
+
+    public boolean isSaleNotStartedAt(LocalDateTime now) {
+        return now.isBefore(this.saleStartAt);
+    }
+
+    public boolean isSaleEndedAt(LocalDateTime now) {
+        return !now.isBefore(this.saleEndAt);
+    }
 }

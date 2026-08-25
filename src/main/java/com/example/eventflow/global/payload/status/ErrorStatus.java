@@ -24,10 +24,12 @@ public enum ErrorStatus implements BaseStatus {
     EVENT_NOT_FOUND(HttpStatus.NOT_FOUND, "EVENT404", "존재하지 않는 행사입니다."),
     EVENT_FORBIDDEN(HttpStatus.FORBIDDEN, "EVENT403", "행사에 대한 권한이 없습니다."),
     INVALID_EVENT_PERIOD(HttpStatus.BAD_REQUEST, "EVENT400", "행사 종료 시각은 시작 시각 이후여야 합니다."),
+    EVENT_CLOSED(HttpStatus.CONFLICT, "EVENT409", "마감된 행사입니다."),
 
     // 회차
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHEDULE404", "존재하지 않는 회차입니다."),
     INVALID_SCHEDULE_PERIOD(HttpStatus.BAD_REQUEST, "SCHEDULE400", "회차 일정이 올바르지 않습니다."),
+    SCHEDULE_ALREADY_STARTED(HttpStatus.CONFLICT, "SCHEDULE409", "이미 시작된 공연입니다."),
 
     // 좌석
     INVALID_SEAT_RANGE(HttpStatus.BAD_REQUEST, "SEAT400", "좌석 번호 범위가 올바르지 않습니다."),
@@ -38,6 +40,8 @@ public enum ErrorStatus implements BaseStatus {
     SEAT_ALREADY_RESERVED(HttpStatus.CONFLICT, "RESERVATION409", "이미 예매된 좌석입니다."),
     RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "RESERVATION404", "존재하지 않는 예매입니다."),
     RESERVATION_FORBIDDEN(HttpStatus.FORBIDDEN, "RESERVATION403", "예매에 대한 권한이 없습니다."),
+    RESERVATION_SALE_NOT_STARTED(HttpStatus.CONFLICT, "RESERVATION4091", "아직 예매가 시작되지 않았습니다."),
+    RESERVATION_SALE_ENDED(HttpStatus.CONFLICT, "RESERVATION4092", "예매가 종료되었습니다."),
 
     // 결제
     PAYMENT_NOT_ALLOWED(HttpStatus.CONFLICT, "PAYMENT409", "결제할 수 없는 예매 상태입니다."),

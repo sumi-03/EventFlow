@@ -68,4 +68,8 @@ public class Event extends BaseEntity {
     public boolean isOwnedBy(Long userId) {
         return this.createdBy.getId().equals(userId);
     }
+
+    public boolean isOpen() {
+        return this.status == EventStatus.OPEN;
+    }
 }

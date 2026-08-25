@@ -56,8 +56,8 @@ public class ScheduleService {
         LocalDateTime saleEnd = request.saleEndAt();
         boolean showValid = end.isAfter(start);
         boolean saleValid = saleEnd.isAfter(saleStart);
-        boolean saleBeforeShow = !saleStart.isAfter(start);
-        if (!showValid || !saleValid || !saleBeforeShow) {
+        boolean saleEndsBeforeOrAtShow = !saleEnd.isAfter(start);
+        if (!showValid || !saleValid || !saleEndsBeforeOrAtShow) {
             throw new BusinessException(ErrorStatus.INVALID_SCHEDULE_PERIOD);
         }
     }
