@@ -1,0 +1,25 @@
+spring:
+  docker:
+    compose:
+      enabled: false
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+  jackson:
+    time-zone: Asia/Seoul
+
+jwt:
+  secret: eventflow-test-secret-key-must-be-long-enough-for-hs256-0123456789
+  access-token-validity: 1800000
+  refresh-token-validity: 1209600000
+
+logging:
+  level:
+    org.hibernate.SQL: warn
+    org.testcontainers: info
