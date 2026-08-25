@@ -108,4 +108,23 @@ class ReservationAvailabilityTest extends IntegrationTestSupport {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("SCHEDULE409"));
     }
+
+    @Test
+    void 다른_사람의_예약은_결제할_수_없다() throws Exception {
+        var organizer = api.signupAndLogin("organizer@test.com", "운영자");
+        var customer = api.signupAndLogin("customer@test.com", "관객");
+        var attacker = api.signupAndLogin("attacker@test.com", "공격자");
+
+        var scenario = api.createScenario(organizer, ApiFixture.Timeline.normal());
+        Long reservationId = api.reserve(customer, scenario.seatId());
+
+        api.post(
+                "/api/reservations/{reservationId}/payment",
+                attacker,
+                null,
+                reservationId
+        )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.code").value("RESERVATION403"));
+    }
 }
