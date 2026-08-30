@@ -1,0 +1,9 @@
+# 실제 값으로 채운 뒤 `terraform.tfvars` 로 복사 (tfvars는 .gitignore 처리됨)
+# 또는 환경변수로도 가능: export TF_VAR_jwt_secret="..."
+
+jwt_secret = "여기에-운영용-랜덤-키-64자-이상-eventflow-prod-xxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# 필요 시 오버라이드
+# aws_region     = "ap-northeast-2"
+# desired_count  = 2
+# db_instance_class = "db.t4g.micro"
