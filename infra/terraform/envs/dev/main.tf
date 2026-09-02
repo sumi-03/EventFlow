@@ -83,12 +83,13 @@ module "alb" {
 
 # ---------------------------------------------------------------------------
 # 6) 실행: ECS Fargate 클러스터 / 태스크 정의 / 서비스(태스크 2개 고정)
+#    태스크는 private 서브넷에 배치 - 인터넷에서 직접 도달 불가, 아웃바운드는 NAT 경유
 # ---------------------------------------------------------------------------
 module "ecs" {
   source            = "../../modules/ecs"
   name_prefix       = local.name_prefix
   region            = var.aws_region
-  subnet_ids        = module.network.public_subnet_ids
+  subnet_ids        = module.network.private_subnet_ids
   security_group_id = module.network.app_security_group_id
   target_group_arn  = module.alb.target_group_arn
   image             = "${module.ecr.repository_url}:${var.container_image_tag}"

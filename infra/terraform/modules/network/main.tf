@@ -34,7 +34,7 @@ resource "aws_internet_gateway" "this" {
   tags   = { Name = "${var.name_prefix}-igw" }
 }
 
-# public 서브넷: ALB + ECS 태스크 (NAT 없이 공인 IP로 아웃바운드)
+# public 서브넷: ALB + NAT Gateway 전용
 resource "aws_subnet" "public" {
   count                   = length(var.azs)
   vpc_id                  = aws_vpc.this.id
@@ -47,7 +47,7 @@ resource "aws_subnet" "public" {
   }
 }
 
-# private 서브넷: RDS 전용 (외부에서 도달 불가)
+# private 서브넷: ECS 태스크 + RDS (외부에서 직접 도달 불가, 아웃바운드는 NAT 경유)
 resource "aws_subnet" "private" {
   count             = length(var.azs)
   vpc_id            = aws_vpc.this.id
@@ -75,16 +75,42 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# private 라우팅: VPC 로컬만 (NAT 미사용, 인터넷 경로 없음)
+# ---------------------------------------------------------------------------
+# NAT Gateway: private 서브넷의 아웃바운드 통로 (ECS 태스크 -> ECR/CloudWatch/SSM)
+#   AZ마다 하나씩. 한 AZ의 NAT가 죽어도 다른 AZ는 자기 NAT로 계속 나간다
+#   (single NAT면 그 AZ 장애가 전체 아웃바운드 중단으로 번짐).
+# ---------------------------------------------------------------------------
+resource "aws_eip" "nat" {
+  count  = length(var.azs)
+  domain = "vpc"
+  tags   = { Name = "${var.name_prefix}-nat-eip-${var.azs[count.index]}" }
+}
+
+resource "aws_nat_gateway" "this" {
+  count         = length(var.azs)
+  allocation_id = aws_eip.nat[count.index].id
+  subnet_id     = aws_subnet.public[count.index].id
+  tags          = { Name = "${var.name_prefix}-nat-${var.azs[count.index]}" }
+
+  depends_on = [aws_internet_gateway.this]
+}
+
+# private 라우팅: AZ마다 라우트 테이블 하나, 0.0.0.0/0 -> 같은 AZ의 NAT
+#   (나가는 길만 있고 들어오는 경로는 없음 / AZ 장애 격리)
 resource "aws_route_table" "private" {
+  count  = length(var.azs)
   vpc_id = aws_vpc.this.id
-  tags   = { Name = "${var.name_prefix}-private-rt" }
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.this[count.index].id
+  }
+  tags = { Name = "${var.name_prefix}-private-rt-${var.azs[count.index]}" }
 }
 
 resource "aws_route_table_association" "private" {
   count          = length(aws_subnet.private)
   subnet_id      = aws_subnet.private[count.index].id
-  route_table_id = aws_route_table.private.id
+  route_table_id = aws_route_table.private[count.index].id
 }
 
 # 1계층: 인터넷 -> ALB (80)
@@ -184,4 +210,9 @@ output "app_security_group_id" {
 
 output "rds_security_group_id" {
   value = aws_security_group.rds.id
+}
+
+# private 서브넷에서 나가는 트래픽의 공인 출발지 IP (AZ별 NAT, 외부 서비스 allowlist 등에 사용)
+output "nat_public_ips" {
+  value = aws_eip.nat[*].public_ip
 }

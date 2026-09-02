@@ -56,6 +56,7 @@ resource "aws_db_instance" "this" {
 
   allocated_storage = var.allocated_storage
   storage_type      = "gp3"
+  storage_encrypted = true # 저장 데이터 암호화 (기본값 false — 명시). 미지정 시 aws/rds KMS 키 사용
 
   db_name  = var.db_name
   username = var.db_username

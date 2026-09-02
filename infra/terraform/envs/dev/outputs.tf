@@ -33,6 +33,11 @@ output "rds_endpoint" {
   sensitive = true
 }
 
+# private 서브넷(ECS 태스크)에서 나가는 트래픽의 공인 출발지 IP (AZ별)
+output "nat_public_ips" {
+  value = module.network.nat_public_ips
+}
+
 # GitHub Actions repository variables 로 그대로 복사할 값 모음
 output "github_actions_variables" {
   value = {

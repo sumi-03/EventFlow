@@ -7,7 +7,7 @@ variable "region" {
 }
 
 variable "subnet_ids" {
-  description = "태스크를 놓을 public 서브넷 (NAT 없이 공인 IP로 아웃바운드)"
+  description = "태스크를 놓을 private 서브넷 (아웃바운드는 NAT 경유)"
   type        = list(string)
 }
 
@@ -186,7 +186,7 @@ resource "aws_ecs_service" "this" {
   network_configuration {
     subnets          = var.subnet_ids
     security_groups  = [var.security_group_id]
-    assign_public_ip = true # NAT 미사용 -> ECR/CloudWatch/SSM 접근에 공인 IP 필요
+    assign_public_ip = false # private 서브넷 -> ECR/CloudWatch/SSM 접근은 NAT 경유
   }
 
   load_balancer {
