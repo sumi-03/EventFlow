@@ -28,6 +28,7 @@ module "database" {
   security_group_id = module.network.rds_security_group_id
   instance_class    = var.db_instance_class
   allocated_storage = var.db_allocated_storage
+  multi_az          = var.db_multi_az
   db_name           = "eventflow"
   db_username       = "eventflow"
   db_password       = random_password.db.result

@@ -33,6 +33,12 @@ variable "db_allocated_storage" {
   default = 20
 }
 
+variable "db_multi_az" {
+  description = "RDS Multi-AZ. 인프라 빠른 반복이 필요할 때만 -var db_multi_az=false"
+  type        = bool
+  default     = true
+}
+
 variable "container_port" {
   type    = number
   default = 8080

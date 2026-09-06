@@ -65,15 +65,16 @@ data "aws_kms_alias" "ssm" {
 # 컨테이너 stdout 로그 수집처
 resource "aws_cloudwatch_log_group" "this" {
   name              = "/ecs/${var.name_prefix}"
-  retention_in_days = 7
+  retention_in_days = 30
 }
 
 resource "aws_ecs_cluster" "this" {
   name = var.name_prefix
 
+  # 태스크/서비스 단위 CPU·메모리 지표 수집 (오토스케일링 근거·부하 분석용)
   setting {
     name  = "containerInsights"
-    value = "disabled" # dev 비용 절약
+    value = "enabled"
   }
 }
 

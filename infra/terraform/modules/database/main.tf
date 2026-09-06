@@ -27,6 +27,30 @@ variable "engine_version" {
   default = "16"
 }
 
+variable "multi_az" {
+  description = "다른 AZ에 동기 standby + 자동 장애조치(60~120s). prod 기본값 true"
+  type        = bool
+  default     = true
+}
+
+variable "backup_retention_period" {
+  description = "자동 백업 보관 일수"
+  type        = number
+  default     = 7
+}
+
+variable "deletion_protection" {
+  description = "삭제 방지. dev에서 terraform destroy 하려면 false 유지 필요, prod면 true"
+  type        = bool
+  default     = false
+}
+
+variable "skip_final_snapshot" {
+  description = "삭제 시 최종 스냅샷 생략. prod면 false"
+  type        = bool
+  default     = true
+}
+
 variable "db_name" {
   type    = string
   default = "eventflow"
@@ -65,11 +89,11 @@ resource "aws_db_instance" "this" {
   db_subnet_group_name   = aws_db_subnet_group.this.name
   vpc_security_group_ids  = [var.security_group_id]
   publicly_accessible    = false
-  multi_az               = false # dev: 비용 절약 (프로덕션이면 true)
+  multi_az               = var.multi_az
 
-  backup_retention_period = 1
-  skip_final_snapshot     = true  # dev: destroy 시 스냅샷 생략
-  deletion_protection     = false # dev: destroy 허용
+  backup_retention_period = var.backup_retention_period
+  skip_final_snapshot     = var.skip_final_snapshot
+  deletion_protection     = var.deletion_protection
   apply_immediately       = true
 
   tags = { Name = "${var.name_prefix}-postgres" }
