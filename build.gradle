@@ -51,6 +51,11 @@ dependencies {
 
 tasks.named('test') {
     useJUnitPlatform()
+    // 테스트 실행 시 JVM/에이전트 관련 경고 로그 억제 (기능과 무관)
+    jvmArgs('-XX:+EnableDynamicAgentLoading', '-Xshare:off')
+    testLogging {
+        showStandardStreams = true   // 테스트 안 println을 콘솔에도 출력
+    }
 }
 
 // bootJar만 산출물로 사용 (plain jar 비활성화 -> Dockerfile COPY 단순화)
