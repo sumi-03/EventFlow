@@ -29,7 +29,7 @@ class ReservationConcurrencyTest extends IntegrationTestSupport {
     private ReservationRepository reservationRepository;
 
     @Test
-    void 동일_좌석에_동시에_예매하면_중복_예매가_발생한다() throws Exception {
+    void 동일_좌석에_동시에_예매해도_예약은_한_건만_생성된다() throws Exception {
         // 1. 행사·회차·좌석 1개 준비
         ApiFixture.Session organizer = api.signupAndLogin("organizer@test.com", "운영자");
         ApiFixture.Scenario scenario = api.createScenario(organizer, ApiFixture.Timeline.normal());
@@ -72,8 +72,7 @@ class ReservationConcurrencyTest extends IntegrationTestSupport {
         System.out.println(" 실제 생성된 예약 건수: " + reservationCount);
         System.out.println("========================================");
 
-        // 좌석 1개에는 예약이 1건이어야 정상이다.
-        // 지금은 동시성 제어가 없어 2건 이상 생긴다 → 중복 예매 재현.
-        assertThat(reservationCount).isGreaterThanOrEqualTo(2);
+        // 비관적 락으로 요청이 좌석 행 단위로 직렬화되어 예약은 1건만 생성
+        assertThat(reservationCount).isEqualTo(1);
     }
 }

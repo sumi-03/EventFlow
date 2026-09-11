@@ -43,7 +43,7 @@ public class ReservationService {
     public ReservationResponse reserve(Long userId, ReservationCreateRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorStatus.USER_NOT_FOUND));
-        Seat seat = seatRepository.findById(request.seatId())
+        Seat seat = seatRepository.findByIdForUpdate(request.seatId())
                 .orElseThrow(() -> new BusinessException(ErrorStatus.SEAT_NOT_FOUND));
 
         validateReservable(seat);
