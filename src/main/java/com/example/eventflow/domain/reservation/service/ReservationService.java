@@ -13,6 +13,7 @@ import com.example.eventflow.domain.user.entity.User;
 import com.example.eventflow.domain.user.repository.UserRepository;
 import com.example.eventflow.global.exception.BusinessException;
 import com.example.eventflow.global.payload.status.ErrorStatus;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,7 +55,12 @@ public class ReservationService {
         seat.reserve();
 
         Reservation reservation = new Reservation(user, seat, seat.getPrice());
-        return ReservationResponse.from(reservationRepository.save(reservation));
+        try {
+            return ReservationResponse.from(reservationRepository.saveAndFlush(reservation));
+        } catch (DataIntegrityViolationException e) {
+            // 부분 유니크 인덱스 위반 = 락을 거치지 않은 경로에서 같은 좌석이 먼저 예약됨
+            throw new BusinessException(ErrorStatus.SEAT_ALREADY_RESERVED);
+        }
     }
 
     private void validateReservable(Seat seat) {
