@@ -188,6 +188,31 @@ resource "aws_security_group" "rds" {
   tags = { Name = "${var.name_prefix}-rds-sg" }
 }
 
+# 4계층: ECS 태스크 -> ElastiCache(Redis, 6379). app SG에서 오는 것만 허용
+resource "aws_security_group" "redis" {
+  name_prefix = "${var.name_prefix}-redis-"
+  vpc_id      = aws_vpc.this.id
+  description = "ElastiCache - allow Redis from app tasks only"
+
+  ingress {
+    description     = "Redis from app"
+    from_port       = 6379
+    to_port         = 6379
+    protocol        = "tcp"
+    security_groups = [aws_security_group.app.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  lifecycle { create_before_destroy = true }
+  tags = { Name = "${var.name_prefix}-redis-sg" }
+}
+
 output "vpc_id" {
   value = aws_vpc.this.id
 }
@@ -210,6 +235,10 @@ output "app_security_group_id" {
 
 output "rds_security_group_id" {
   value = aws_security_group.rds.id
+}
+
+output "redis_security_group_id" {
+  value = aws_security_group.redis.id
 }
 
 # private 서브넷에서 나가는 트래픽의 공인 출발지 IP (AZ별 NAT, 외부 서비스 allowlist 등에 사용)

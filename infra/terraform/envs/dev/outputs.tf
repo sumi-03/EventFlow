@@ -41,12 +41,12 @@ output "nat_public_ips" {
 # GitHub Actions repository variables 로 그대로 복사할 값 모음
 output "github_actions_variables" {
   value = {
-    AWS_REGION           = var.aws_region
-    AWS_DEPLOY_ROLE_ARN  = module.cicd.deploy_role_arn
-    ECR_REPOSITORY       = module.ecr.repository_name
-    ECS_CLUSTER          = module.ecs.cluster_name
-    ECS_SERVICE          = module.ecs.service_name
-    ECS_TASK_FAMILY      = module.ecs.task_family
-    ECS_CONTAINER        = module.ecs.container_name
+    AWS_REGION          = var.aws_region
+    AWS_DEPLOY_ROLE_ARN = module.cicd.deploy_role_arn
+    ECR_REPOSITORY      = module.ecr.repository_name
+    ECS_CLUSTER         = module.ecs.cluster_name
+    ECS_SERVICE         = module.ecs.service_name
+    ECS_TASK_FAMILY     = module.ecs.task_family
+    ECS_CONTAINER       = module.ecs.container_name
   }
 }

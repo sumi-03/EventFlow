@@ -35,6 +35,16 @@ module "database" {
 }
 
 # ---------------------------------------------------------------------------
+# 2-1) 대기열: ElastiCache Redis (private 서브넷, 단일 노드)
+# ---------------------------------------------------------------------------
+module "elasticache" {
+  source            = "../../modules/elasticache"
+  name_prefix       = local.name_prefix
+  subnet_ids        = module.network.private_subnet_ids
+  security_group_id = module.network.redis_security_group_id
+}
+
+# ---------------------------------------------------------------------------
 # 3) 앱 설정값: SSM Parameter Store (ECS가 컨테이너에 시크릿으로 주입)
 # ---------------------------------------------------------------------------
 resource "aws_ssm_parameter" "db_url" {
@@ -59,6 +69,18 @@ resource "aws_ssm_parameter" "jwt_secret" {
   name  = "/${var.project}/${var.env}/jwt/secret"
   type  = "SecureString"
   value = var.jwt_secret
+}
+
+resource "aws_ssm_parameter" "redis_host" {
+  name  = "/${var.project}/${var.env}/redis/host"
+  type  = "String"
+  value = module.elasticache.endpoint
+}
+
+resource "aws_ssm_parameter" "redis_port" {
+  name  = "/${var.project}/${var.env}/redis/port"
+  type  = "String"
+  value = tostring(module.elasticache.port)
 }
 
 # ---------------------------------------------------------------------------
@@ -104,6 +126,8 @@ module "ecs" {
     DB_USERNAME = aws_ssm_parameter.db_username.arn
     DB_PASSWORD = aws_ssm_parameter.db_password.arn
     JWT_SECRET  = aws_ssm_parameter.jwt_secret.arn
+    REDIS_HOST  = aws_ssm_parameter.redis_host.arn
+    REDIS_PORT  = aws_ssm_parameter.redis_port.arn
   }
 
   # 리스너가 만들어진 뒤에 서비스가 대상 등록을 시도하도록
