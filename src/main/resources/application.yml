@@ -16,3 +16,8 @@ jwt:
   secret: ${JWT_SECRET:eventflow-local-dev-secret-key-please-change-in-production-0123456789}
   access-token-validity: 1800000        # 30분
   refresh-token-validity: 1209600000    # 14일
+
+queue:
+  admit-interval-millis: 2000  # 이 간격마다 admit-batch-size만큼 입장 허용선이 올라감
+  admit-batch-size: 50
+  permit-ttl-seconds: 300      # 입장 허가 후 예매 API를 이 시간 안에 호출해야 함

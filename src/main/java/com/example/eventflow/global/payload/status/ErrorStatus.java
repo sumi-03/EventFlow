@@ -50,6 +50,10 @@ public enum ErrorStatus implements BaseStatus {
     // 티켓
     TICKET_NOT_FOUND(HttpStatus.NOT_FOUND, "TICKET404", "존재하지 않는 티켓입니다."),
     TICKET_FORBIDDEN(HttpStatus.FORBIDDEN, "TICKET403", "티켓에 대한 권한이 없습니다."),
+
+    // 대기열
+    QUEUE_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "QUEUE404", "존재하지 않는 대기열 토큰입니다."),
+    QUEUE_ADMISSION_REQUIRED(HttpStatus.FORBIDDEN, "QUEUE403", "대기열 입장 허가가 필요합니다."),
     ;
 
     private final HttpStatus httpStatus;

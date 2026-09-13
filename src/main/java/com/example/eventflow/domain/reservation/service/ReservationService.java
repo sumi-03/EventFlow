@@ -1,6 +1,7 @@
 package com.example.eventflow.domain.reservation.service;
 
 import com.example.eventflow.domain.event.entity.Event;
+import com.example.eventflow.domain.queue.service.AdmissionQueueService;
 import com.example.eventflow.domain.reservation.dto.ReservationCreateRequest;
 import com.example.eventflow.domain.reservation.dto.ReservationResponse;
 import com.example.eventflow.domain.reservation.entity.Reservation;
@@ -28,15 +29,18 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final SeatRepository seatRepository;
     private final UserRepository userRepository;
+    private final AdmissionQueueService admissionQueueService;
     private final Clock clock;
 
     public ReservationService(ReservationRepository reservationRepository,
                               SeatRepository seatRepository,
                               UserRepository userRepository,
+                              AdmissionQueueService admissionQueueService,
                               Clock clock) {
         this.reservationRepository = reservationRepository;
         this.seatRepository = seatRepository;
         this.userRepository = userRepository;
+        this.admissionQueueService = admissionQueueService;
         this.clock = clock;
     }
 
@@ -48,6 +52,7 @@ public class ReservationService {
                 .orElseThrow(() -> new BusinessException(ErrorStatus.SEAT_NOT_FOUND));
 
         validateReservable(seat);
+        validateAdmitted(seat, request.queueToken());
 
         if (seat.getStatus() != SeatStatus.AVAILABLE) {
             throw new BusinessException(ErrorStatus.SEAT_ALREADY_RESERVED);
@@ -79,6 +84,18 @@ public class ReservationService {
         }
         if (schedule.isSaleEndedAt(now)) {
             throw new BusinessException(ErrorStatus.RESERVATION_SALE_ENDED);
+        }
+    }
+
+    // 이 회차가 대기열을 거친 적 있다면(isQueueActive) permit 없이는 예매를 막는다.
+    // 한 번도 대기열을 켠 적 없는 회차는 원래대로 대기열 없이 예매 가능
+    private void validateAdmitted(Seat seat, String queueToken) {
+        Long scheduleId = seat.getEventSchedule().getId();
+        if (!admissionQueueService.isQueueActive(scheduleId)) {
+            return;
+        }
+        if (!admissionQueueService.consumePermit(scheduleId, queueToken)) {
+            throw new BusinessException(ErrorStatus.QUEUE_ADMISSION_REQUIRED);
         }
     }
 

@@ -48,7 +48,7 @@ class ReservationConcurrencyTest extends IntegrationTestSupport {
         for (Long customerId : customerIds) {
             Thread thread = new Thread(() -> {
                 try {
-                    reservationService.reserve(customerId, new ReservationCreateRequest(seatId));
+                    reservationService.reserve(customerId, new ReservationCreateRequest(seatId, null));
                 } catch (Exception e) {
                     // 예매 실패(좌석이 이미 선점됨 등)는 예상된 결과이므로 무-시한다
                 }

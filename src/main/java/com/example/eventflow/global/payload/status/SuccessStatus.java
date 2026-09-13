@@ -32,6 +32,9 @@ public enum SuccessStatus implements BaseStatus {
 
     // 결제
     PAYMENT_SUCCESS(HttpStatus.CREATED, "PAYMENT201", "결제가 완료되었습니다."),
+
+    // 대기열
+    QUEUE_JOINED(HttpStatus.CREATED, "QUEUE201", "대기열에 등록되었습니다."),
     ;
 
     private final HttpStatus httpStatus;

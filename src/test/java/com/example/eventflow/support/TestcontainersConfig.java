@@ -3,7 +3,9 @@ package com.example.eventflow.support;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 // 컨테이너를 Spring Bean으로 등록해 ApplicationContext 캐시와 생명주기를 함께 가져간다.
 // JUnit5 @Container/@Testcontainers로 관리하면 테스트 클래스마다 컨테이너가
@@ -18,5 +20,11 @@ public class TestcontainersConfig {
                 .withDatabaseName("eventflow_test")
                 .withUsername("eventflow_test")
                 .withPassword("eventflow_test");
+    }
+
+    @Bean
+    @ServiceConnection("redis")
+    GenericContainer<?> redisContainer() {
+        return new GenericContainer<>(DockerImageName.parse("redis:7")).withExposedPorts(6379);
     }
 }
