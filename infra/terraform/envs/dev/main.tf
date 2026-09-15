@@ -121,6 +121,11 @@ module "ecs" {
   memory            = var.container_memory
   desired_count     = var.desired_count
 
+  enable_autoscaling       = var.enable_autoscaling
+  autoscaling_min_capacity = var.autoscaling_min_capacity
+  autoscaling_max_capacity = var.autoscaling_max_capacity
+  autoscaling_cpu_target   = var.autoscaling_cpu_target
+
   ssm_parameter_arns = {
     DB_URL      = aws_ssm_parameter.db_url.arn
     DB_USERNAME = aws_ssm_parameter.db_username.arn

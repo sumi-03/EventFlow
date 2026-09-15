@@ -55,9 +55,30 @@ variable "container_memory" {
 }
 
 variable "desired_count" {
-  description = "고정 태스크 수 (오토스케일링 미사용)"
+  description = "초기 태스크 수"
   type        = number
   default     = 2
+}
+
+variable "enable_autoscaling" {
+  description = "ECS Service Auto Scaling(CPU target tracking) 사용 여부"
+  type        = bool
+  default     = true
+}
+
+variable "autoscaling_min_capacity" {
+  type    = number
+  default = 2
+}
+
+variable "autoscaling_max_capacity" {
+  type    = number
+  default = 6
+}
+
+variable "autoscaling_cpu_target" {
+  type    = number
+  default = 50
 }
 
 variable "container_image_tag" {

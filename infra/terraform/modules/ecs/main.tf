@@ -41,9 +41,31 @@ variable "memory" {
 }
 
 variable "desired_count" {
-  description = "고정 태스크 수. 오토스케일링은 이번 단계 범위 아님"
+  description = "초기 태스크 수. enable_autoscaling=true면 이후 개수는 Application Auto Scaling이 관리"
   type        = number
   default     = 2
+}
+
+variable "enable_autoscaling" {
+  description = "ECS Service Auto Scaling(target tracking, CPU 기준) 사용 여부"
+  type        = bool
+  default     = false
+}
+
+variable "autoscaling_min_capacity" {
+  type    = number
+  default = 2
+}
+
+variable "autoscaling_max_capacity" {
+  type    = number
+  default = 6
+}
+
+variable "autoscaling_cpu_target" {
+  description = "목표 평균 CPU 사용률(%). 이보다 높아지면 태스크를 늘리고, 낮아지면 줄인다"
+  type        = number
+  default     = 50
 }
 
 variable "ssm_parameter_arns" {
@@ -201,8 +223,43 @@ resource "aws_ecs_service" "this" {
 
   # 최초 태스크 정의는 Terraform이 생성하지만,
   # 이후 이미지 교체(새 revision 등록 + 서비스 갱신)는 CI/CD가 담당한다.
+  # desired_count도 같이 무시한다 - 오토스케일링이 켜지면 Application Auto Scaling이 실시간으로
+  # 바꾸는데, Terraform이 그걸 var.desired_count로 계속 되돌리려 하면 안 되기 때문
+  # (ignore_changes는 변수를 조건으로 못 써서 오토스케일링 꺼진 경우에도 동일하게 적용됨)
   lifecycle {
-    ignore_changes = [task_definition]
+    ignore_changes = [task_definition, desired_count]
+  }
+}
+
+# ---------------------------------------------------------------------------
+# Auto Scaling: CPU 평균 사용률 기준 target tracking (enable_autoscaling=true일 때만)
+# ---------------------------------------------------------------------------
+resource "aws_appautoscaling_target" "ecs" {
+  count = var.enable_autoscaling ? 1 : 0
+
+  max_capacity       = var.autoscaling_max_capacity
+  min_capacity       = var.autoscaling_min_capacity
+  resource_id        = "service/${aws_ecs_cluster.this.name}/${aws_ecs_service.this.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+}
+
+resource "aws_appautoscaling_policy" "ecs_cpu" {
+  count = var.enable_autoscaling ? 1 : 0
+
+  name               = "${var.name_prefix}-cpu-target-tracking"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.ecs[0].resource_id
+  scalable_dimension = aws_appautoscaling_target.ecs[0].scalable_dimension
+  service_namespace  = aws_appautoscaling_target.ecs[0].service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value       = var.autoscaling_cpu_target
+    scale_in_cooldown  = 60
+    scale_out_cooldown = 60
   }
 }
 
