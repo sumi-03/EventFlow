@@ -31,11 +31,16 @@
 <br>
 
 ## 아키텍처
-<img width="1000" alt="구성도 drawio" src="https://github.com/user-attachments/assets/541404bf-3873-4376-bbcf-5f20384620c1" />
 
-- **IaC**: Terraform 모듈화 (`network` · `alb` · `ecs` · `ecr` · `database` · `elasticache` · `cicd`), S3 원격 state
-- **CI/CD**: GitHub Actions → OIDC 인증 → 테스트 → ECR 푸시 → ECS 롤링 배포 → 스모크 테스트
-- **보안**: ECS 태스크 private 서브넷 배치, RDS 저장 암호화
+<img width="1000" alt="AWS 아키텍처" src="https://github.com/user-attachments/assets/541404bf-3873-4376-bbcf-5f20384620c1" />
+
+> 대기열용 ElastiCache(Redis)는 ECS와 같은 private 서브넷에 배치
+
+- **IaC** — VPC · RDS · ALB · ECS Fargate · ElastiCache 등 인프라 전체를 Terraform 모듈로 코드화, S3 원격 state
+- **CI/CD** — GitHub Actions → OIDC 인증(장기 액세스 키 없음) → 테스트 → ECR 푸시 → ECS 롤링 배포 → 스모크 테스트
+- **네트워크 격리** — ECS · RDS · Redis는 private 서브넷, AZ별 NAT Gateway, ALB → App → Data 3계층 보안 그룹
+- **데이터 보호** — RDS 저장 암호화(KMS), DB 접속 정보 · JWT 시크릿은 SSM Parameter Store로 주입
+- **모니터링** — CloudWatch Logs, Container Insights
 
 <br>
 
