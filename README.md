@@ -37,7 +37,8 @@
 > 대기열용 ElastiCache(Redis)는 ECS와 같은 private 서브넷에 배치
 
 - **IaC** — VPC · RDS · ALB · ECS Fargate · ElastiCache 등 인프라 전체를 Terraform 모듈로 코드화, S3 원격 state
-- **CI/CD** — GitHub Actions → OIDC 인증(장기 액세스 키 없음) → 테스트 → ECR 푸시 → ECS 롤링 배포 → 스모크 테스트
+- **CI/CD** — GitHub Actions → OIDC 인증(장기 액세스 키 없음) → 테스트 → ECR 푸시 → ECS 롤링 배포 → 서비스 안정화 대기
+- **배포 검증** — 스모크 테스트 스크립트(`infra/smoke.sh`)로 배포된 ALB에 전체 예매 흐름 실행
 - **네트워크 격리** — ECS · RDS · Redis는 private 서브넷, AZ별 NAT Gateway, ALB → App → Data 3계층 보안 그룹
 - **데이터 보호** — RDS 저장 암호화(KMS), DB 접속 정보 · JWT 시크릿은 SSM Parameter Store로 주입
 - **모니터링** — CloudWatch Logs, Container Insights
